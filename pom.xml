@@ -1,0 +1,152 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.1.0</modelVersion>
+
+  <groupId>uk.co.froot.demo</groupId>
+  <artifactId>dropwizard-openid</artifactId>
+  <version>1.2.0</version>
+
+  <url>http://localhost:8080</url>
+
+  <name>OpenId/OAuth Service</name>
+  <description>A demo using Dropwizard and OpenId4Java/SocialAuth</description>
+  <inceptionYear>2013</inceptionYear>
+
+  <!-- Set the version levels for linked dependencies -->
+  <properties>
+    <dropwizard.version>0.6.2</dropwizard.version>
+  </properties>
+
+  <build>
+
+    <plugins>
+
+      <!-- All compilation is done under Java6 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+          <debug>true</debug>
+        </configuration>
+      </plugin>
+
+      <!-- Shade plugin is required to make a "slim" JAR -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>1.6</version>
+        <configuration>
+          <createDependencyReducedPom>true</createDependencyReducedPom>
+          <filters>
+            <filter>
+              <artifact>*:*</artifact>
+              <excludes>
+                <exclude>META-INF/*.SF</exclude>
+                <exclude>META-INF/*.DSA</exclude>
+                <exclude>META-INF/*.RSA</exclude>
+              </excludes>
+            </filter>
+          </filters>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>uk.co.froot.demo.openid.OpenIDDemoService</mainClass>
+                </transformer>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+
+    <!-- Dropwizard framework -->
+    <!-- Core functionality -->
+    <dependency>
+      <groupId>com.yammer.dropwizard</groupId>
+      <artifactId>dropwizard-core</artifactId>
+      <version>${dropwizard.version}</version>
+    </dependency>
+    <!-- Authentication support -->
+    <dependency>
+      <groupId>com.yammer.dropwizard</groupId>
+      <artifactId>dropwizard-auth</artifactId>
+      <version>${dropwizard.version}</version>
+    </dependency>
+    <!-- Resource testing support -->
+    <dependency>
+      <groupId>com.yammer.dropwizard</groupId>
+      <artifactId>dropwizard-testing</artifactId>
+      <version>${dropwizard.version}</version>
+    </dependency>
+    <!-- HTML Freemarker views support -->
+    <dependency>
+      <groupId>com.yammer.dropwizard</groupId>
+      <artifactId>dropwizard-views</artifactId>
+      <version>${dropwizard.version}</version>
+    </dependency>
+    <!-- REST client support for upstream data -->
+    <dependency>
+      <groupId>com.yammer.dropwizard</groupId>
+      <artifactId>dropwizard-client</artifactId>
+      <version>${dropwizard.version}</version>
+    </dependency>
+
+    <!-- OpenID heavy lifting -->
+    <dependency>
+      <groupId>org.openid4java</groupId>
+      <artifactId>openid4java-consumer</artifactId>
+      <version>0.9.6</version>
+      <type>pom</type>
+      <!-- Guice 2.0 has been superseded -->
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.code.guice</groupId>
+          <artifactId>guice</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    
+    <!-- OAuth library -->
+    <dependency>
+      <groupId>org.brickred</groupId>
+      <artifactId>socialauth</artifactId>
+      <version>4.2</version>
+    </dependency>   
+    <dependency>
+      <groupId>org.brickred</groupId>
+      <artifactId>socialauth-filter</artifactId>
+      <version>2.4</version>
+    </dependency>   
+
+    <!-- Guice -->
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>3.0</version>
+    </dependency>
+
+    <!-- Provides Markdown support -->
+    <dependency>
+      <groupId>org.pegdown</groupId>
+      <artifactId>pegdown</artifactId>
+      <version>1.1.0</version>
+    </dependency>
+
+  </dependencies>
+
+</project>

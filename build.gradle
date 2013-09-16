@@ -1,0 +1,123 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+apply plugin: 'shadow'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+project.sourceCompatibility = 1.7
+project.targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+     /** Guice 2.0 has been superseded...this is in openid4java which needs to be updated **/
+    all*.exclude group: 'com.google.code.guice'
+}
+
+dependencies {
+    compile "com.yammer.dropwizard:dropwizard-core:$dropwizardVersion"
+    /** Authentication support **/
+    compile "com.yammer.dropwizard:dropwizard-auth:$dropwizardVersion"
+    /** Resource testing support **/
+    compile "com.yammer.dropwizard:dropwizard-testing:$dropwizardVersion"
+    /** HTML Freemarker views support **/
+    compile "com.yammer.dropwizard:dropwizard-views:$dropwizardVersion"
+    /** REST client support for upstream data **/
+    compile "com.yammer.dropwizard:dropwizard-client:$dropwizardVersion"
+    
+    /** OpenID library **/
+        /** Guice 2.0 has been superseded **/
+    compile ('org.openid4java:openid4java-consumer:0.9.6') {
+        exclude group: 'com.google.code.guice'
+    }
+    compile "com.google.inject:guice:3.0"
+    
+    /** OAuth library **/
+    compile "org.brickred:socialauth:4.+";
+    compile "org.brickred:socialauth-filter:2.+";
+    
+    /** markdown support for web pages **/
+    compile "org.pegdown:pegdown:1.1.0"
+}
+
+
+jar {
+    manifest {
+        attributes 'Main-Class': pkgname+'.'+appclass
+    }
+}
+
+/**
+ * One-JAR plugin integration
+ */
+buildscript {
+    repositories {
+        maven {
+            name 'Gradle Shadow'
+            url 'http://dl.bintray.com/content/johnrengelman/gradle-plugins'
+        }
+    }
+    dependencies {
+        classpath 'org.gradle.plugins:shadow:0.7.4'
+    }
+}
+
+import org.gradle.api.plugins.shadow.transformers.AppendingTransformer
+shadow {
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    transformer(AppendingTransformer) {
+        resource = 'META-INF/spring.handlers'
+    }
+    transformer(AppendingTransformer) {
+        resource = 'META-INF/spring.schemas'
+    }
+}
+
+task run(dependsOn: 'classes', type: JavaExec) {
+    main = pkgname+'.'+appclass
+    classpath = sourceSets.main.runtimeClasspath
+    args 'server','app.yml'
+}
+
+project.ext {
+    oneJarName = jarprefix+'-'+version+'-standalone.jar'
+    shadowJarName = jarprefix+'-'+version+'-shadow.jar'
+}
+
+task runShadow(type:Exec, dependsOn: 'shadow') {
+    workingDir = "build/libs"
+    commandLine = ['java', '-jar', '-server', project.shadowJarName,'server','../../app.yml']
+}
+
+task bdd(type: Exec, dependsOn: 'shadow') {
+    description = "Tests BDDs against the running application"
+    
+    // fix to run cucumber on a particular infernal OS properly
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine 'cmd', '/c', 'bundle.bat', 'exec', 'cucumber'
+    }
+    else {
+        commandLine = ['cucumber']
+    }
+    workingDir = "./src/test/resources/bdd" 
+    def jarProcess = null
+
+    doFirst{
+        println "Starting application on separate thread..."
+        Thread.startDaemon {
+            jarProcess = 'java -jar -server build/libs/'+project.shadowJarName+' server app.yml'.execute()
+        }
+        println "Waiting for application to start before executing tests..."
+        addShutdownHook {
+            println "Shutting down application"
+            jarProcess.destroy()
+        }
+    }
+}
+

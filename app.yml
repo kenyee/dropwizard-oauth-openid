@@ -1,0 +1,98 @@
+# Define the HTTP settings
+http:
+  port: 8080
+  adminPort: 8081
+
+# Define proxy host settings for connecting to OpenID servers in PublicOpenIDResource
+##proxyHost: proxy.domain.com
+##proxyPort: 8080
+
+# Define the client settings for connecting to upstream data services
+httpClient:
+  timeout: 60s # Timeout while connecting, reading, or writing (Heroku needs large value for spin-up)
+  timeToLive: 10m # Keep connections open
+  cookiesEnabled: true # Track cookies
+  gzipEnabled: true # Allow for gzipped request and response entities
+  minThreads: 1
+  maxThreads: 128 # Thread pool for JerseyClient's async requests
+
+logging:
+
+  level: WARN
+
+  # Logger-specific levels.
+  loggers:
+
+    # Set specific levels
+    "com.sun.jersey.api.client": DEBUG
+    "com.yammer": INFO
+    "uk.co.froot": DEBUG
+
+  # ...
+  # Settings for logging to stdout.
+  console:
+
+    # If true, write log statements to stdout.
+    enabled: true
+
+    # Do not display log statements below this threshold to stdout.
+    threshold: ALL
+
+  # Settings for logging to a file.
+  file:
+
+    # If true, write log statements to a file.
+    enabled: false
+
+    # Do not write log statements below this threshold to the file.
+    threshold: ALL
+
+    # The file to which current statements will be logged.
+    currentLogFilename: /var/log/example/developer.log
+
+    # When the log file rotates, the archived log will be renamed to this and gzipped. The
+    # %d is replaced with the previous day (yyyy-MM-dd). Custom rolling windows can be created
+    # by passing a SimpleDateFormat-compatible format as an argument: "%d{yyyy-MM-dd-hh}".
+    archivedLogFilenamePattern: /var/log/example/developer-%d.log.gz
+
+    # The number of archived files to keep.
+    archivedFileCount: 5
+
+    # The timezone used to format dates. HINT: USE THE DEFAULT, UTC.
+    timeZone: UTC
+
+# Define OAuth settings
+oauthSuccessUrl: http://localhost:8080/oauth/verify
+
+oauthCfg:  
+  - name: googleplus
+    prefix: googleapis.com
+    key: 1111111.apps.googleusercontent.com
+    secret: 22222222
+    permissions: https://www.googleapis.com/auth/userinfo.profile,email,http://www.google.com/m8/feeds/,http://picasaweb.google.com/data/
+    ## Valid permissions/scopes from: http://support.google.com/a/bin/answer.py?hl=en&answer=162106
+  - name: facebook
+    prefix: graph.facebook.com
+    key: 1111111
+    secret: 222222222
+    permissions: publish_stream,read_stream,user_photos,email,user_birthday,user_location,offline_access
+    ## Valid permissions from https://developers.facebook.com/docs/reference/login/extended-permissions/
+  - name: twitter
+    prefix: twitter.com
+    key: 111111
+    secret: 22222222
+  - name: linkedin
+    prefix: api.linkedin.com
+    key: 11111111
+    secret: 222222222
+
+#oauthCustomCfg:
+#  socialauth.myprovider: org.my.socialauth.provider.SomethingImpl
+#  socialauth.myprovider.scope: user_email
+
+# Define admin users (email address and provider uniquely identifies a user)
+adminUsers:
+  test@test.com: facebook
+  name@name.com: googleplus
+
+#
