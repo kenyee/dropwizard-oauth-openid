@@ -24,7 +24,7 @@ import org.brickred.socialauth.util.SocialAuthUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.co.froot.demo.openid.OpenIDDemoConfiguration.OAuthCfgClass;
+import uk.co.froot.demo.openid.AppConfiguration.OAuthCfgClass;
 import uk.co.froot.demo.openid.OpenIDDemoService;
 import uk.co.froot.demo.openid.core.InMemoryUserCache;
 import uk.co.froot.demo.openid.model.security.Authority;

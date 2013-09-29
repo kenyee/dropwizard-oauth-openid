@@ -14,8 +14,8 @@ import org.pegdown.PegDownProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.co.froot.demo.openid.OpenIDDemoConfiguration;
-import uk.co.froot.demo.openid.OpenIDDemoConfiguration.OAuthCfgClass;
+import uk.co.froot.demo.openid.AppConfiguration;
+import uk.co.froot.demo.openid.AppConfiguration.OAuthCfgClass;
 import uk.co.froot.demo.openid.OpenIDDemoService;
 import uk.co.froot.demo.openid.model.security.User;
 
@@ -36,7 +36,7 @@ public class BaseModel {
             .getLogger(BaseModel.class);
 
     public BaseModel() {
-        OpenIDDemoConfiguration cfg = OpenIDDemoService.getConfig();
+        AppConfiguration cfg = OpenIDDemoService.getConfig();
         oauthCfg = cfg.getOAuthCfg();
     }
 

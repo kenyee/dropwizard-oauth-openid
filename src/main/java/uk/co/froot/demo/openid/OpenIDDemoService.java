@@ -13,62 +13,75 @@ import uk.co.froot.demo.openid.model.security.User;
 import uk.co.froot.demo.openid.resources.PublicHomeResource;
 
 /**
- * <p>Service to provide the following to application:</p>
+ * <p>
+ * Service to provide the following to application:
+ * </p>
  * <ul>
  * <li>Provision of access to resources</li>
  * </ul>
- * <p>Use <code>java -jar mbm-develop-SNAPSHOT.jar server openid-demo.yml</code> to start the demo</p>
- *
- * @since 0.0.1
- *         
+ * <p>
+ * Use <code>java -jar mbm-develop-SNAPSHOT.jar server openid-demo.yml</code> to
+ * start the demo
+ * </p>
+ * 
+ * @since 0.0.1  
  */
-public class OpenIDDemoService extends Service<OpenIDDemoConfiguration> {
-  private static OpenIDDemoConfiguration cfg;
-  public static OpenIDDemoConfiguration getConfig() {
-      return cfg;
-  }
+public class OpenIDDemoService extends Service<AppConfiguration> {
+    private static AppConfiguration cfg;
 
-  /**
-   * Main entry point to the application
-   *
-   * @param args CLI arguments
-   * @throws Exception
-   */
-  public static void main(String[] args) throws Exception {
-    new OpenIDDemoService().run(args);
-  }
+    public static AppConfiguration getConfig() {
+        return cfg;
+    }
 
-  private OpenIDDemoService() {
+    /**
+     * Main entry point to the application
+     * 
+     * @param args
+     *            CLI arguments
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
+        new OpenIDDemoService().run(args);
+    }
 
-  }
+    private OpenIDDemoService() {
 
-  @Override
-  public void initialize(Bootstrap<OpenIDDemoConfiguration> openIDDemoConfigurationBootstrap) {
+    }
 
-    // Bundles
-    openIDDemoConfigurationBootstrap.addBundle(new AssetsBundle("/assets/images", "/images"));
-    openIDDemoConfigurationBootstrap.addBundle(new AssetsBundle("/assets/jquery", "/jquery"));
-    openIDDemoConfigurationBootstrap.addBundle(new ViewBundle());
-  }
+    @Override
+    public void initialize(Bootstrap<AppConfiguration> configBootstrap) {
 
-  @Override
-  public void run(OpenIDDemoConfiguration openIDDemoConfiguration, Environment environment) throws Exception {
-    // save config so it can be used elseware
-    cfg = openIDDemoConfiguration;
-      
-    // Configure authenticator
-    OpenIDAuthenticator authenticator = new OpenIDAuthenticator();
+        // Bundles
+        configBootstrap
+                .addBundle(new AssetsBundle("/assets/images", "/images"));
+        configBootstrap
+                .addBundle(new AssetsBundle("/assets/jquery", "/jquery"));
+        configBootstrap.addBundle(new ViewBundle());
+    }
 
-    // Configure environment
-    environment.scanPackagesForResourcesAndProviders(PublicHomeResource.class);
+    @Override
+    public void run(AppConfiguration appConfiguration, Environment environment)
+            throws Exception {
+        // save config so it can be used elseware
+        cfg = appConfiguration;
 
-    // Health checks
-    environment.addHealthCheck(new uk.co.froot.demo.openid.health.OpenIdDemoHealthCheck());
+        // Configure authenticator
+        OpenIDAuthenticator authenticator = new OpenIDAuthenticator();
 
-    // Providers
-    environment.addProvider(new ViewMessageBodyWriter());
-    environment.addProvider(new OpenIDRestrictedToProvider<User>(authenticator, "OpenID"));
+        // Configure environment
+        environment
+                .scanPackagesForResourcesAndProviders(PublicHomeResource.class);
 
-    // Session handler
-    environment.setSessionHandler(new SessionHandler());  }
+        // Health checks
+        environment
+                .addHealthCheck(new uk.co.froot.demo.openid.health.OpenIdDemoHealthCheck());
+
+        // Providers
+        environment.addProvider(new ViewMessageBodyWriter());
+        environment.addProvider(new OpenIDRestrictedToProvider<User>(
+                authenticator, "OpenID"));
+
+        // Session handler
+        environment.setSessionHandler(new SessionHandler());
+    }
 }

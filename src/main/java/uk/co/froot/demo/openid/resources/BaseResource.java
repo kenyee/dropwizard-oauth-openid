@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Optional;
 
-import uk.co.froot.demo.openid.OpenIDDemoConfiguration;
+import uk.co.froot.demo.openid.AppConfiguration;
 import uk.co.froot.demo.openid.model.BaseModel;
 import uk.co.froot.demo.openid.model.ModelBuilder;
 import uk.co.froot.demo.openid.model.security.User;
@@ -103,7 +103,7 @@ public abstract class BaseResource {
       log.debug("Replacing session token with {}", value);
 
       return new NewCookie(
-        OpenIDDemoConfiguration.SESSION_TOKEN_NAME,
+        AppConfiguration.SESSION_TOKEN_NAME,
         value,   // Value
         "/",     // Path
         null,    // Domain
@@ -115,7 +115,7 @@ public abstract class BaseResource {
       log.debug("Removing session token");
 
       return new NewCookie(
-        OpenIDDemoConfiguration.SESSION_TOKEN_NAME,
+        AppConfiguration.SESSION_TOKEN_NAME,
         null,   // Value
         null,    // Path
         null,   // Domain

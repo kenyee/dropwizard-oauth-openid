@@ -24,7 +24,7 @@ import com.yammer.dropwizard.config.Configuration;
  * @since 0.0.1
  *         
  */
-public class OpenIDDemoConfiguration extends Configuration {
+public class AppConfiguration extends Configuration {
 
   /**
    * The cookie name for the session token

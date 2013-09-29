@@ -8,7 +8,7 @@ import javax.ws.rs.core.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.co.froot.demo.openid.OpenIDDemoConfiguration;
+import uk.co.froot.demo.openid.AppConfiguration;
 import uk.co.froot.demo.openid.core.InMemoryUserCache;
 import uk.co.froot.demo.openid.model.security.User;
 
@@ -40,7 +40,7 @@ public class ModelBuilder {
       return sessionToken;
     }
 
-    Cookie cookie = httpHeaders.getCookies().get(OpenIDDemoConfiguration.SESSION_TOKEN_NAME);
+    Cookie cookie = httpHeaders.getCookies().get(AppConfiguration.SESSION_TOKEN_NAME);
     if (cookie == null) {
       // This is a cold user
       return sessionToken;

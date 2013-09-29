@@ -9,7 +9,7 @@ import com.yammer.dropwizard.auth.AuthenticationException;
 import com.yammer.dropwizard.auth.Authenticator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import uk.co.froot.demo.openid.OpenIDDemoConfiguration;
+import uk.co.froot.demo.openid.AppConfiguration;
 import uk.co.froot.demo.openid.model.security.Authority;
 
 import javax.ws.rs.WebApplicationException;
@@ -70,11 +70,11 @@ class OpenIDRestrictedToInjectable<T> extends AbstractHttpContextInjectable<T> {
 
       // Get the Authorization header
       final Map<String,Cookie> cookieMap = httpContext.getRequest().getCookies();
-      if (!cookieMap.containsKey(OpenIDDemoConfiguration.SESSION_TOKEN_NAME)) {
+      if (!cookieMap.containsKey(AppConfiguration.SESSION_TOKEN_NAME)) {
         throw new WebApplicationException(Response.Status.UNAUTHORIZED);
       }
 
-      UUID sessionToken = UUID.fromString(cookieMap.get(OpenIDDemoConfiguration.SESSION_TOKEN_NAME).getValue());
+      UUID sessionToken = UUID.fromString(cookieMap.get(AppConfiguration.SESSION_TOKEN_NAME).getValue());
 
       if (sessionToken != null) {
 

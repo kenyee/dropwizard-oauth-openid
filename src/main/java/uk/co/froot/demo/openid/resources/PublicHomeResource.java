@@ -57,7 +57,7 @@ public class PublicHomeResource extends BaseResource {
    * @return A localised view containing HTML
    */
   @GET
-  @Path("/markdown")
+  @Path("markdown")
   @Timed
   @CacheControl(noCache = true)
   public PublicFreemarkerView<BaseModel> viewMarkdown() {
@@ -87,7 +87,7 @@ public class PublicHomeResource extends BaseResource {
    * @return A login view with a session token
    */
   @GET
-  @Path("/login")
+  @Path("login")
   public View login() {
 
     return new PublicFreemarkerView<BaseModel>("common/login.ftl",
@@ -99,7 +99,7 @@ public class PublicHomeResource extends BaseResource {
  * @throws URISyntaxException 
    */
   @GET
-  @Path("/logout")
+  @Path("logout")
   public Response logout() throws URISyntaxException {
 
     BaseModel model = modelBuilder.newBaseModel(httpHeaders);
